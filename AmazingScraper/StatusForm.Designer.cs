@@ -28,35 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Button_Cancel = new System.Windows.Forms.Button();
+            this.txtConsole = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // Button_Cancel
+            // txtConsole
             // 
-            this.Button_Cancel.BackColor = System.Drawing.Color.Maroon;
-            this.Button_Cancel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.Button_Cancel.ForeColor = System.Drawing.Color.White;
-            this.Button_Cancel.Location = new System.Drawing.Point(0, 510);
-            this.Button_Cancel.Name = "Button_Cancel";
-            this.Button_Cancel.Size = new System.Drawing.Size(767, 58);
-            this.Button_Cancel.TabIndex = 1;
-            this.Button_Cancel.Text = "Cancelar";
-            this.Button_Cancel.UseVisualStyleBackColor = false;
-            this.Button_Cancel.Click += new System.EventHandler(this.Button_Cancel_Click);
+            this.txtConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtConsole.Location = new System.Drawing.Point(3, 3);
+            this.txtConsole.Multiline = true;
+            this.txtConsole.Name = "txtConsole";
+            this.txtConsole.Size = new System.Drawing.Size(761, 468);
+            this.txtConsole.TabIndex = 2;
+            this.txtConsole.TextChanged += new System.EventHandler(this.txtConsole_TextChanged_1);
             // 
             // StatusForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.Button_Cancel);
+            this.Controls.Add(this.txtConsole);
             this.Name = "StatusForm";
             this.Size = new System.Drawing.Size(767, 568);
             this.Load += new System.EventHandler(this.StatusForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Button Button_Cancel;
+        private System.Windows.Forms.TextBox txtConsole;
     }
 }

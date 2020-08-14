@@ -35,11 +35,11 @@
             this.TxtBox_Search = new System.Windows.Forms.TextBox();
             this.Button_Go = new MaterialSkin.Controls.MaterialRaisedButton();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.Picture_Password = new System.Windows.Forms.PictureBox();
+            this.Picture_User = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture_Password)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture_User)).BeginInit();
             this.SuspendLayout();
             // 
             // TxtBox_Password
@@ -79,10 +79,12 @@
             // 
             // TxtBox_Search
             // 
-            this.TxtBox_Search.Location = new System.Drawing.Point(20, 281);
+            this.TxtBox_Search.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.TxtBox_Search.Location = new System.Drawing.Point(0, 341);
             this.TxtBox_Search.Multiline = true;
             this.TxtBox_Search.Name = "TxtBox_Search";
-            this.TxtBox_Search.Size = new System.Drawing.Size(731, 206);
+            this.TxtBox_Search.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.TxtBox_Search.Size = new System.Drawing.Size(767, 227);
             this.TxtBox_Search.TabIndex = 12;
             this.TxtBox_Search.TextChanged += new System.EventHandler(this.TxtBox_Search_TextChanged);
             // 
@@ -100,7 +102,6 @@
             this.Button_Go.TabIndex = 13;
             this.Button_Go.Text = "COMENZAR";
             this.Button_Go.UseVisualStyleBackColor = true;
-            this.Button_Go.Click += new System.EventHandler(this.Button_Go_Click);
             // 
             // pictureBox3
             // 
@@ -112,34 +113,34 @@
             this.pictureBox3.TabIndex = 16;
             this.pictureBox3.TabStop = false;
             // 
-            // pictureBox2
+            // Picture_Password
             // 
-            this.pictureBox2.Image = global::AmazingScraper.Properties.Resources.llave;
-            this.pictureBox2.Location = new System.Drawing.Point(48, 122);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(56, 49);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 15;
-            this.pictureBox2.TabStop = false;
+            this.Picture_Password.Image = global::AmazingScraper.Properties.Resources.llave;
+            this.Picture_Password.Location = new System.Drawing.Point(48, 122);
+            this.Picture_Password.Name = "Picture_Password";
+            this.Picture_Password.Size = new System.Drawing.Size(56, 49);
+            this.Picture_Password.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.Picture_Password.TabIndex = 15;
+            this.Picture_Password.TabStop = false;
             // 
-            // pictureBox1
+            // Picture_User
             // 
-            this.pictureBox1.Image = global::AmazingScraper.Properties.Resources.user;
-            this.pictureBox1.Location = new System.Drawing.Point(48, 38);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(56, 50);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 14;
-            this.pictureBox1.TabStop = false;
+            this.Picture_User.Image = global::AmazingScraper.Properties.Resources.user;
+            this.Picture_User.Location = new System.Drawing.Point(48, 38);
+            this.Picture_User.Name = "Picture_User";
+            this.Picture_User.Size = new System.Drawing.Size(56, 50);
+            this.Picture_User.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.Picture_User.TabIndex = 14;
+            this.Picture_User.TabStop = false;
+            this.Picture_User.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // ConfigForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pictureBox3);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.Button_Go);
+            this.Controls.Add(this.Picture_Password);
+            this.Controls.Add(this.Picture_User);
             this.Controls.Add(this.TxtBox_Search);
             this.Controls.Add(this.TxtBox_Password);
             this.Controls.Add(this.TxtBox_User);
@@ -147,8 +148,8 @@
             this.Size = new System.Drawing.Size(767, 568);
             this.Load += new System.EventHandler(this.ConfigForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture_Password)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture_User)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -156,12 +157,12 @@
 
         #endregion
 
-        private MaterialSkin.Controls.MaterialSingleLineTextField TxtBox_Password;
-        private MaterialSkin.Controls.MaterialSingleLineTextField TxtBox_User;
-        private System.Windows.Forms.TextBox TxtBox_Search;
+        public MaterialSkin.Controls.MaterialSingleLineTextField TxtBox_Password;
+        public MaterialSkin.Controls.MaterialSingleLineTextField TxtBox_User;
+        public System.Windows.Forms.TextBox TxtBox_Search;
         private MaterialSkin.Controls.MaterialRaisedButton Button_Go;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox3;
+        public System.Windows.Forms.PictureBox Picture_User;
+        public System.Windows.Forms.PictureBox Picture_Password;
     }
 }

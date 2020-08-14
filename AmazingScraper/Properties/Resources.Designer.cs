@@ -63,6 +63,26 @@ namespace AmazingScraper.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap blind_chrome_fw {
+            get {
+                object obj = ResourceManager.GetObject("blind chrome.fw", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap good_chrome_fw {
+            get {
+                object obj = ResourceManager.GetObject("good chrome.fw", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ico_fw {
             get {
                 object obj = ResourceManager.GetObject("ico.fw", resourceCulture);
@@ -116,6 +136,26 @@ namespace AmazingScraper.Properties {
         internal static System.Drawing.Bitmap setup {
             get {
                 object obj = ResourceManager.GetObject("setup", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ToLeft {
+            get {
+                object obj = ResourceManager.GetObject("ToLeft", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ToRight {
+            get {
+                object obj = ResourceManager.GetObject("ToRight", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

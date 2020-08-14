@@ -32,36 +32,69 @@ namespace AmazingScraper
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.Button_Go = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.Panel_Top = new System.Windows.Forms.Panel();
+            this.PictureBox_ShowBrowser = new System.Windows.Forms.PictureBox();
+            this.Button_Forward = new System.Windows.Forms.PictureBox();
+            this.Button_Back = new System.Windows.Forms.PictureBox();
             this.Label_GearBar = new System.Windows.Forms.Label();
             this.PictureBox_Logo = new System.Windows.Forms.PictureBox();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.configForm = new AmazingScraper.ConfigForm();
+            this.Button_Big = new System.Windows.Forms.Button();
             this.StatusForm = new AmazingScraper.StatusForm();
-            this.panel1.SuspendLayout();
+            this.configForm = new AmazingScraper.ConfigForm();
+            this.Panel_Top.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBox_ShowBrowser)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Button_Forward)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Button_Back)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox_Logo)).BeginInit();
             this.SuspendLayout();
             // 
-            // Button_Go
+            // Panel_Top
             // 
-            this.Button_Go.Location = new System.Drawing.Point(0, 0);
-            this.Button_Go.Name = "Button_Go";
-            this.Button_Go.Size = new System.Drawing.Size(75, 23);
-            this.Button_Go.TabIndex = 9;
+            this.Panel_Top.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            this.Panel_Top.Controls.Add(this.PictureBox_ShowBrowser);
+            this.Panel_Top.Controls.Add(this.Button_Forward);
+            this.Panel_Top.Controls.Add(this.Button_Back);
+            this.Panel_Top.Controls.Add(this.Label_GearBar);
+            this.Panel_Top.Controls.Add(this.PictureBox_Logo);
+            this.Panel_Top.Dock = System.Windows.Forms.DockStyle.Top;
+            this.Panel_Top.Location = new System.Drawing.Point(0, 0);
+            this.Panel_Top.Name = "Panel_Top";
+            this.Panel_Top.Size = new System.Drawing.Size(781, 111);
+            this.Panel_Top.TabIndex = 8;
             // 
-            // panel1
+            // PictureBox_ShowBrowser
             // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-            this.panel1.Controls.Add(this.Label_GearBar);
-            this.panel1.Controls.Add(this.PictureBox_Logo);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(781, 111);
-            this.panel1.TabIndex = 8;
+            this.PictureBox_ShowBrowser.Image = global::AmazingScraper.Properties.Resources.blind_chrome_fw;
+            this.PictureBox_ShowBrowser.Location = new System.Drawing.Point(238, 49);
+            this.PictureBox_ShowBrowser.Name = "PictureBox_ShowBrowser";
+            this.PictureBox_ShowBrowser.Size = new System.Drawing.Size(53, 50);
+            this.PictureBox_ShowBrowser.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureBox_ShowBrowser.TabIndex = 5;
+            this.PictureBox_ShowBrowser.TabStop = false;
+            this.PictureBox_ShowBrowser.Click += new System.EventHandler(this.pictureBox_ShowBrowser_Click);
+            // 
+            // Button_Forward
+            // 
+            this.Button_Forward.Image = global::AmazingScraper.Properties.Resources.ToRight;
+            this.Button_Forward.Location = new System.Drawing.Point(554, 37);
+            this.Button_Forward.Name = "Button_Forward";
+            this.Button_Forward.Size = new System.Drawing.Size(63, 62);
+            this.Button_Forward.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Button_Forward.TabIndex = 4;
+            this.Button_Forward.TabStop = false;
+            this.Button_Forward.Click += new System.EventHandler(this.Button_Forward_Click);
+            // 
+            // Button_Back
+            // 
+            this.Button_Back.Image = global::AmazingScraper.Properties.Resources.ToLeft;
+            this.Button_Back.Location = new System.Drawing.Point(449, 37);
+            this.Button_Back.Name = "Button_Back";
+            this.Button_Back.Size = new System.Drawing.Size(63, 62);
+            this.Button_Back.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Button_Back.TabIndex = 3;
+            this.Button_Back.TabStop = false;
+            this.Button_Back.Click += new System.EventHandler(this.Button_Back_Click);
             // 
             // Label_GearBar
             // 
@@ -70,9 +103,8 @@ namespace AmazingScraper
             this.Label_GearBar.ForeColor = System.Drawing.Color.Chocolate;
             this.Label_GearBar.Location = new System.Drawing.Point(730, 59);
             this.Label_GearBar.Name = "Label_GearBar";
-            this.Label_GearBar.Size = new System.Drawing.Size(27, 40);
+            this.Label_GearBar.Size = new System.Drawing.Size(0, 40);
             this.Label_GearBar.TabIndex = 2;
-            this.Label_GearBar.Text = "!";
             this.Label_GearBar.TextChanged += new System.EventHandler(this.GearText_TextChanged);
             this.Label_GearBar.Click += new System.EventHandler(this.Label_GearBar_Click);
             // 
@@ -86,29 +118,34 @@ namespace AmazingScraper
             this.PictureBox_Logo.TabIndex = 1;
             this.PictureBox_Logo.TabStop = false;
             // 
-            // notifyIcon1
+            // Button_Big
             // 
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "notifyIcon1";
-            this.notifyIcon1.Visible = true;
-            // 
-            // configForm
-            // 
-            this.configForm.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.configForm.Location = new System.Drawing.Point(0, 111);
-            this.configForm.Name = "configForm";
-            this.configForm.Size = new System.Drawing.Size(781, 572);
-            this.configForm.TabIndex = 10;
-            this.configForm.Load += new System.EventHandler(this.configForm1_Load);
+            this.Button_Big.BackColor = System.Drawing.Color.Green;
+            this.Button_Big.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.Button_Big.ForeColor = System.Drawing.Color.MintCream;
+            this.Button_Big.Location = new System.Drawing.Point(0, 625);
+            this.Button_Big.Name = "Button_Big";
+            this.Button_Big.Size = new System.Drawing.Size(781, 58);
+            this.Button_Big.TabIndex = 12;
+            this.Button_Big.Text = "COMENZAR";
+            this.Button_Big.UseVisualStyleBackColor = false;
+            this.Button_Big.Click += new System.EventHandler(this.Button_Big_Click);
             // 
             // StatusForm
             // 
-            this.StatusForm.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.StatusForm.Location = new System.Drawing.Point(0, 0);
+            this.StatusForm.Location = new System.Drawing.Point(12, 117);
             this.StatusForm.Name = "StatusForm";
-            this.StatusForm.Size = new System.Drawing.Size(781, 683);
-            this.StatusForm.TabIndex = 11;
-            this.StatusForm.Load += new System.EventHandler(this.statusForm1_Load);
+            this.StatusForm.Size = new System.Drawing.Size(757, 502);
+            this.StatusForm.TabIndex = 14;
+            this.StatusForm.Load += new System.EventHandler(this.statusForm1_Load_1);
+            // 
+            // configForm
+            // 
+            this.configForm.Location = new System.Drawing.Point(0, 117);
+            this.configForm.Name = "configForm";
+            this.configForm.Size = new System.Drawing.Size(781, 502);
+            this.configForm.TabIndex = 13;
+            this.configForm.Load += new System.EventHandler(this.configForm_Load);
             // 
             // MainForm
             // 
@@ -117,8 +154,8 @@ namespace AmazingScraper
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(781, 683);
             this.Controls.Add(this.configForm);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.Button_Go);
+            this.Controls.Add(this.Button_Big);
+            this.Controls.Add(this.Panel_Top);
             this.Controls.Add(this.StatusForm);
             this.ForeColor = System.Drawing.Color.Black;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -126,8 +163,12 @@ namespace AmazingScraper
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AmazingScraper (TM) - for Anshus";
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.TopMost = true;
+            this.Panel_Top.ResumeLayout(false);
+            this.Panel_Top.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBox_ShowBrowser)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Button_Forward)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Button_Back)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox_Logo)).EndInit();
             this.ResumeLayout(false);
 
@@ -136,14 +177,15 @@ namespace AmazingScraper
        
 
         #endregion
-        private System.Windows.Forms.Button Button_Go;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel Panel_Top;
         private System.Windows.Forms.PictureBox PictureBox_Logo;
-        public ConfigForm configForm;
-        public StatusForm StatusForm;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.Label Label_GearBar;
-        
+        public System.Windows.Forms.PictureBox Button_Forward;
+        public System.Windows.Forms.PictureBox Button_Back;
+        private System.Windows.Forms.Button Button_Big;
+        private ConfigForm configForm;
+        private StatusForm StatusForm;
+        private System.Windows.Forms.PictureBox PictureBox_ShowBrowser;
     }
 }
 

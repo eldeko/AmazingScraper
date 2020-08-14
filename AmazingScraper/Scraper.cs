@@ -16,7 +16,8 @@ namespace AmazingScraper
     public class Scraper
     {
         private static int GearNumber { get; set; }
-
+        public static bool GreenLight {get;set;}
+        public static bool Working { get; private set; }
         public static string GearBar()
         {
             switch (GearNumber)
@@ -29,7 +30,7 @@ namespace AmazingScraper
             }            
         }
 
-        private void AddGear()
+        private static void AddGear()
         {
             GearNumber++;
 
@@ -40,15 +41,22 @@ namespace AmazingScraper
             form.InsertBar = GearBar();
         }       
 
-        public void Scrape(string userParam, string passwordParam, string searchParams)
+        public void Scrape(string userParam, string passwordParam, string searchParams, bool showChrome)
         {
-            
+
+            Working = true;
+            ClockGear();
+            GreenLight = true;
+            Control.CheckForIllegalCrossThreadCalls = false;
             bool LoggedIn = false;
 
             string BaseDir = "c:\\Scraping";
 
+
             if (!Directory.Exists(BaseDir))
             {
+                TextBox.CheckForIllegalCrossThreadCalls = false;
+                Console.WriteLine("Creando Directorio Base");
                 Directory.CreateDirectory(BaseDir);
             }
 
@@ -65,33 +73,39 @@ namespace AmazingScraper
             #endregion
 
             string[] array = searchParams.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
+            Console.WriteLine("Abriendo navegador");
             var options = new ChromeOptions();
+
+            if (!showChrome) 
             options.AddArguments("headless");            
 
             var driverService = ChromeDriverService.CreateDefaultService();
             driverService.HideCommandPromptWindow = true;
 
-            var driver = new ChromeDriver(driverService, options);       
-
+            var driver = new ChromeDriver(driverService, options);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
             foreach (string searchParam in array)
             {
                 #region Login
 
-                if (!LoggedIn)
+                if (!LoggedIn && GreenLight)
                 {
+                    AddGear();
                     //Go to amazon.es and click sign in
+                    Console.WriteLine("Ingresando a Amazon.es");
                     driver.Url = "https://www.amazon.es/";
+                    Console.WriteLine("Click en Login");
                     driver.FindElement(By.CssSelector("#nav-link-accountList > div > span")).Click();
                     AddGear();
                     //Fill email and click
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                    Console.WriteLine("Ingresando usuario");
                     var user = driver.FindElement(By.CssSelector("#ap_email"));
                     user.SendKeys(userParam);
                     driver.FindElement(By.CssSelector("#continue")).Click();
                     AddGear();
                     //Fill password and click
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                    Console.WriteLine("Ingresando Contraseña");
                     var password = driver.FindElement(By.CssSelector("#ap_password"));
                     password.SendKeys(passwordParam);
                     driver.FindElement(By.CssSelector("#auth-signin-button")).Click();
@@ -102,27 +116,32 @@ namespace AmazingScraper
                 #endregion
 
                 #region Búsqueda y filtro
-
+                if (GreenLight)
+                { 
                 //Fill search
+                Console.WriteLine("Ingresando en Amazon.es");
                 driver.Url = "https://www.amazon.es/";
                 AddGear();
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                    Thread.Sleep(2000);
                 var searchBox = driver.FindElement(By.CssSelector("#twotabsearchtextbox"));
+                Console.WriteLine("Ingresando búsqueda");
                 searchBox.SendKeys(searchParam);
-                driver.FindElement(By.CssSelector("#nav-search > form > div.nav-right > div > input")).Click();
+                    searchBox.SendKeys(OpenQA.Selenium.Keys.Return);
+                //driver.FindElement(By.CssSelector("#nav-search > form > div.nav-right > div > input")).Click();
                 AddGear();
                 Thread.Sleep(2000);
                 AddGear();
                 //Ir a novedades
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                Console.WriteLine("Ordenando por novedades");
+                    
                 driver.FindElement(By.CssSelector("#a-autoid-7")).Click();
                 AddGear();
                 driver.FindElement(By.CssSelector("#s-result-sort-select_4")).Click();
                 AddGear();
 
                 //Cargar todos los productos de la primera página
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
                 Thread.Sleep(2000);
+                Console.WriteLine("Creando lista de productos");
                 var webElements = driver.FindElements(By.XPath(".//*[@data-component-type='s-search-result']"));
                 AddGear();
                 //Removemos patrocinados
@@ -144,105 +163,142 @@ namespace AmazingScraper
 
                 #endregion
                 AddGear();
-                foreach (string link in linkList.Take(3))
-                {
-                    AddGear();
-                    driver.Url = link;
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
-                    Thread.Sleep(2000);
-                    driver.FindElement(By.CssSelector("#amzn-ss-text-link > span > span > strong > a")).Click();
+                    if (GreenLight)
+                        foreach (string link in linkList.Take(3))
+                        {
+                            if (GreenLight)
+                            {
+                                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(10000));
+                                AddGear();
+                                Console.WriteLine("Ingresando a producto");
+                                driver.Url = link;                                
+                                Thread.Sleep(2000);
+                                driver.FindElement(By.CssSelector("#amzn-ss-text-link > span > span > strong > a")).Click();
 
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(10000));
-                    wait.Until(drv => drv.FindElement(By.ClassName("amzn-ss-text-shortlink-textarea")).Displayed);
-                    var linkAfiliado = driver.FindElement(By.ClassName("amzn-ss-text-shortlink-textarea")).Text;
+                                wait.Until(drv => drv.FindElement(By.ClassName("amzn-ss-text-shortlink-textarea")).Displayed);
+                                var linkAfiliado = driver.FindElement(By.ClassName("amzn-ss-text-shortlink-textarea")).Text;
 
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(200);
-                    bool poseeNombre = driver.FindElements(By.CssSelector("#productTitle")).Count() > 0;
-                    AddGear();
-                    bool poseeDescripcion = driver.FindElements(By.CssSelector("#productDescription")).Count() > 0;
-                    AddGear();
-                    bool poseePrecio = driver.FindElements(By.CssSelector("#price_inside_buybox")).Count() > 0;
-                    AddGear();
-                    bool poseePrecioEnvio = driver.FindElements(By.CssSelector("#price-shipping-message")).Count() > 0;
-                    AddGear();
-                    bool poseeValoracion = driver.FindElements(By.CssSelector("#acrPopover")).Count() > 0;
-                    AddGear();
-                    bool poseeImagen = driver.FindElements(By.CssSelector("#landingImage")).Count() > 0;
-                    AddGear();
-                    bool poseeCaracteristicas = driver.FindElements(By.CssSelector("#feature-bullets")).Count() > 0;
+                                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(200);
+                                bool poseeNombre = driver.FindElements(By.CssSelector("#productTitle")).Count() > 0;
+                                AddGear();
+                                bool poseeDescripcion = driver.FindElements(By.CssSelector("#productDescription")).Count() > 0;
+                                AddGear();
+                                bool poseePrecio = driver.FindElements(By.CssSelector("#price_inside_buybox")).Count() > 0;
+                                AddGear();
+                                bool poseePrecioEnvio = driver.FindElements(By.CssSelector("#price-shipping-message")).Count() > 0;
+                                AddGear();
+                                bool poseeValoracion = driver.FindElements(By.CssSelector("#acrPopover")).Count() > 0;
+                                AddGear();
+                                bool poseeImagen = driver.FindElements(By.CssSelector("#landingImage")).Count() > 0;
+                                AddGear();
+                                bool poseeCaracteristicas = driver.FindElements(By.CssSelector("#feature-bullets")).Count() > 0;
 
-                    id += 1;
+                                id += 1;
 
-                    #region Init vars
-                    string descripcion = "";
-                    string valoracion = "";
-                    string precio = "";
-                    string precioEnvio = "";
-                    string nombreProducto = "";
-                    string linkImagen = "";
-                    string caracteristicas = "";
-                    #endregion
+                                #region Init vars
+                                string descripcion = "";
+                                string valoracion = "";
+                                string precio = "";
+                                string precioEnvio = "";
+                                string nombreProducto = "";
+                                string linkImagen = "";
+                                string caracteristicas = "";
+                                #endregion
 
-                    string FullDir = BaseDir + "\\" + searchParam;
+                                string FullDir = BaseDir + "\\" + searchParam;
 
-                    if (!Directory.Exists(FullDir))
+                                if (!Directory.Exists(FullDir))
+                                {
+                                    Console.WriteLine("Creando directorio de búsqueda");
+                                    Directory.CreateDirectory(FullDir);
+                                    id = 1;
+                                }
+
+                                #region Validaciones
+
+                                if (poseeNombre)
+                                    nombreProducto = driver.FindElement(By.CssSelector("#productTitle")).Text;
+                                Console.WriteLine("Obteniendo Nombre");
+
+                                if (poseeDescripcion)
+                                    descripcion = driver.FindElement(By.CssSelector("#productDescription")).Text;
+                                Console.WriteLine("Obteniendo Descripción");
+
+                                if (poseeValoracion)
+                                    valoracion = driver.FindElement(By.CssSelector("#acrPopover")).GetAttribute("Title");
+                                Console.WriteLine("Obteniendo Valoración");
+
+                                if (poseePrecio)
+                                    precio = driver.FindElement(By.CssSelector("#price_inside_buybox")).Text;
+                                Console.WriteLine("Obteniendo Precio");
+
+                                if (poseePrecioEnvio)
+                                    precioEnvio = driver.FindElement(By.CssSelector("#price-shipping-message")).Text;
+                                Console.WriteLine("Obteniendo Costo de envío");
+
+                                if (poseeCaracteristicas)
+                                    caracteristicas = driver.FindElement(By.CssSelector("#feature-bullets")).Text;
+                                Console.WriteLine("Obteniendo Características");
+
+                                if (poseeImagen)
+                                {
+                                    Console.WriteLine("Descargando Imagen");
+                                    linkImagen = driver.FindElement(By.CssSelector("#landingImage")).GetAttribute("src");
+                                    ImageDownloader.DownloadImageFromUrl(linkImagen).Save(FullDir + "\\" + id + " - " + searchParam + ".jpg");
+                                    Console.WriteLine("Imagen descargada");
+                                }
+
+                                #endregion
+
+                                #region Appends
+                                //Id,Link,Producto,Características,Valoración,Precio,Precio Envío,Descripción,Link Imagen,Link Afiliado.
+                                AddGear();
+                                sb.AppendLine("\"" + id + "\","
+                                             + "\"" + link + "\","
+                                             + "\"" + nombreProducto + "\","
+                                             + "\"" + caracteristicas + "\","
+                                             + "\"" + valoracion + "\","
+                                             + "\"" + precio + "\","
+                                             + "\"" + precioEnvio + "\","
+                                             + "\"" + descripcion + "\","
+                                             + "\"" + linkImagen + "\","
+                                             + "\"" + linkAfiliado + "\"");
+
+                                string s = sb.ToString();
+                                AddGear();
+                                #endregion
+                                Console.WriteLine("Guardando CSV...");
+                                System.IO.File.WriteAllText(FullDir + "\\scrap.csv", s);
+                                Console.WriteLine("Guardado");
+                                Console.WriteLine("");
+                            }
+                        }
+                    else
                     {
-                        Directory.CreateDirectory(FullDir);
-                        id = 1;
+                        Console.WriteLine("Cancelado por usuario");
                     }
-
-                    #region Validaciones
-
-                    if (poseeNombre)
-                        nombreProducto = driver.FindElement(By.CssSelector("#productTitle")).Text;
-
-                    if (poseeDescripcion)
-                        descripcion = driver.FindElement(By.CssSelector("#productDescription")).Text;
-
-                    if (poseeValoracion)
-                        valoracion = driver.FindElement(By.CssSelector("#acrPopover")).GetAttribute("Title");
-
-                    if (poseePrecio)
-                        precio = driver.FindElement(By.CssSelector("#price_inside_buybox")).Text;
-
-                    if (poseePrecioEnvio)
-                        precioEnvio = driver.FindElement(By.CssSelector("#price-shipping-message")).Text;
-
-                    if (poseeCaracteristicas)
-                        caracteristicas = driver.FindElement(By.CssSelector("#feature-bullets")).Text;
-
-                    if (poseeImagen)
-                    {
-                        linkImagen = driver.FindElement(By.CssSelector("#landingImage")).GetAttribute("src");
-                        ImageDownloader.DownloadImageFromUrl(linkImagen).Save(FullDir + "\\" + id + " - " + searchParam + ".jpg");
-                    }
-
-                    #endregion
-
-                    #region Appends
-                    //Id,Link,Producto,Características,Valoración,Precio,Precio Envío,Descripción,Link Imagen,Link Afiliado.
-                    AddGear();
-                    sb.AppendLine( "\"" + id + "\","
-                                 + "\"" + link + "\","
-                                 + "\"" + nombreProducto + "\","
-                                 + "\"" + caracteristicas + "\","
-                                 + "\"" + valoracion + "\","
-                                 + "\"" + precio + "\","
-                                 + "\"" + precioEnvio + "\","
-                                 + "\"" + descripcion + "\","
-                                 + "\"" + linkImagen + "\","
-                                 + "\"" + linkAfiliado + "\"");
-
-                    string s = sb.ToString();
-                    AddGear();
-                    #endregion
-
-                    System.IO.File.WriteAllText(FullDir + "\\scrap.csv", s);
-
                 }                
             }
+            Console.WriteLine("Cerrando navegador");
             driver.Dispose();
-            
+            Console.WriteLine("Terminado");
+            Working = false;
+        }
+        public static async Task ClockGear()
+        {
+            //Stuff Happens on the original UI thread
+
+            await Task.Run(() => //This code runs on a new thread, control is returned to the caller on the UI thread.
+            {
+                while (Working)
+                {
+                 AddGear();
+                    Thread.Sleep(500);
+                }
+            //Do Stuff
+    });
+
+            //Stuff Happens on the original UI thread after the loop exits.
         }
     }
 }
