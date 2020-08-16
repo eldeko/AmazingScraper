@@ -117,6 +117,7 @@ namespace AmazingScraper
         {
             if (Button_Big.Text == "COMENZAR")
             {
+                PictureBox_ShowBrowser.Enabled = false;
                 Button_Big.Text = "CANCELAR";
                 Button_Big.BackColor = Color.FromArgb(255, Color.DarkRed);
 
@@ -131,7 +132,9 @@ namespace AmazingScraper
                 Button_Big.BackColor = Color.Green;
                 Button_Big.Enabled = true;
                 Button_Big.Text = "COMENZAR";
-            
+                PictureBox_ShowBrowser.Enabled = true;
+                configForm.TxtBox_User.Enabled = true;
+                configForm.TxtBox_Password.Enabled = true;
             }
 
             if (Button_Big.Text == "CANCELAR")

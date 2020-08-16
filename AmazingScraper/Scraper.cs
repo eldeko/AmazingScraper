@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,7 +17,7 @@ namespace AmazingScraper
     public class Scraper
     {
         private static int GearNumber { get; set; }
-        public static bool GreenLight {get;set;}
+        public static bool GreenLight { get; set; }
         public static bool Working { get; private set; }
         public static string GearBar()
         {
@@ -26,8 +27,8 @@ namespace AmazingScraper
                 case 2: return " / ";
                 case 3: return "-- ";
                 case 4: return "\\ ";
-                default:return " | ";
-            }            
+                default: return " | ";
+            }
         }
 
         private static void AddGear()
@@ -36,10 +37,10 @@ namespace AmazingScraper
 
             if (GearNumber == 5)
                 GearNumber = 1;
-           var form = Application.OpenForms[0] as MainForm;
-            TextBox.CheckForIllegalCrossThreadCalls = false;
+            var form = Application.OpenForms[0] as MainForm;
+            Control.CheckForIllegalCrossThreadCalls = false;
             form.InsertBar = GearBar();
-        }       
+        }
 
         public void Scrape(string userParam, string passwordParam, string searchParams, bool showChrome)
         {
@@ -76,8 +77,8 @@ namespace AmazingScraper
             Console.WriteLine("Abriendo navegador");
             var options = new ChromeOptions();
 
-            if (!showChrome) 
-            options.AddArguments("headless");            
+            if (!showChrome)
+                options.AddArguments("headless");
 
             var driverService = ChromeDriverService.CreateDefaultService();
             driverService.HideCommandPromptWindow = true;
@@ -117,61 +118,61 @@ namespace AmazingScraper
 
                 #region Búsqueda y filtro
                 if (GreenLight)
-                { 
-                //Fill search
-                Console.WriteLine("Ingresando en Amazon.es");
-                driver.Url = "https://www.amazon.es/";
-                AddGear();
-                    Thread.Sleep(2000);
-                var searchBox = driver.FindElement(By.CssSelector("#twotabsearchtextbox"));
-                Console.WriteLine("Ingresando búsqueda");
-                searchBox.SendKeys(searchParam);
-                    searchBox.SendKeys(OpenQA.Selenium.Keys.Return);
-                //driver.FindElement(By.CssSelector("#nav-search > form > div.nav-right > div > input")).Click();
-                AddGear();
-                Thread.Sleep(2000);
-                AddGear();
-                //Ir a novedades
-                Console.WriteLine("Ordenando por novedades");
-                    
-                driver.FindElement(By.CssSelector("#a-autoid-7")).Click();
-                AddGear();
-                driver.FindElement(By.CssSelector("#s-result-sort-select_4")).Click();
-                AddGear();
-
-                //Cargar todos los productos de la primera página
-                Thread.Sleep(2000);
-                Console.WriteLine("Creando lista de productos");
-                var webElements = driver.FindElements(By.XPath(".//*[@data-component-type='s-search-result']"));
-                AddGear();
-                //Removemos patrocinados
-
-                var filteredElements = webElements.Where(z => !z.Text.Contains("Patrocinado"));
-                AddGear();
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine("Id,Link,Producto,Características,Valoración,Precio,Precio Envío,Descripción,Link Imagen,Link Afiliado");
-
-                var linkList = new List<string>();
-                AddGear();
-                foreach (var webElement in filteredElements)
                 {
+                    //Fill search
+                    Console.WriteLine("Ingresando en Amazon.es");
+                    driver.Url = "https://www.amazon.es/";
                     AddGear();
-                    var linkTag = webElement.FindElement(By.TagName("a")).GetAttribute("href");
+                    Thread.Sleep(2000);
+                    var searchBox = driver.FindElement(By.CssSelector("#twotabsearchtextbox"));
+                    Console.WriteLine("Ingresando búsqueda");
+                    searchBox.SendKeys(searchParam);
+                    searchBox.SendKeys(OpenQA.Selenium.Keys.Return);
+                    //driver.FindElement(By.CssSelector("#nav-search > form > div.nav-right > div > input")).Click();
+                    AddGear();
+                    Thread.Sleep(2000);
+                    AddGear();
+                    //Ir a novedades
+                    Console.WriteLine("Ordenando por novedades");
 
-                    if (!linkTag.Contains("bestsellers")) linkList.Add(linkTag);
-                }
+                    driver.FindElement(By.CssSelector("#a-autoid-7")).Click();
+                    AddGear();
+                    driver.FindElement(By.CssSelector("#s-result-sort-select_4")).Click();
+                    AddGear();
 
-                #endregion
-                AddGear();
+                    //Cargar todos los productos de la primera página
+                    Thread.Sleep(2000);
+                    Console.WriteLine("Creando lista de productos");
+                    var webElements = driver.FindElements(By.XPath(".//*[@data-component-type='s-search-result']"));
+                    AddGear();
+                    //Removemos patrocinados
+
+                    var filteredElements = webElements.Where(z => !z.Text.Contains("Patrocinado"));
+                    AddGear();
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("Id,Link,Producto,Características,Valoración,Precio,Precio Envío,Descripción,Link Imagen,Link Afiliado");
+
+                    var linkList = new List<string>();
+                    AddGear();
+                    foreach (var webElement in filteredElements)
+                    {
+                        AddGear();
+                        var linkTag = webElement.FindElement(By.TagName("a")).GetAttribute("href");
+
+                        if (!linkTag.Contains("bestsellers")) linkList.Add(linkTag);
+                    }
+
+                    #endregion
+                    AddGear();
                     if (GreenLight)
-                        foreach (string link in linkList.Take(3))
+                        foreach (string link in linkList)
                         {
                             if (GreenLight)
                             {
                                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(10000));
                                 AddGear();
                                 Console.WriteLine("Ingresando a producto");
-                                driver.Url = link;                                
+                                driver.Url = link;
                                 Thread.Sleep(2000);
                                 driver.FindElement(By.CssSelector("#amzn-ss-text-link > span > span > strong > a")).Click();
 
@@ -222,6 +223,7 @@ namespace AmazingScraper
 
                                 if (poseeDescripcion)
                                     descripcion = driver.FindElement(By.CssSelector("#productDescription")).Text;
+                               descripcion = RemoveCarriageReturn(descripcion);
                                 Console.WriteLine("Obteniendo Descripción");
 
                                 if (poseeValoracion)
@@ -238,6 +240,7 @@ namespace AmazingScraper
 
                                 if (poseeCaracteristicas)
                                     caracteristicas = driver.FindElement(By.CssSelector("#feature-bullets")).Text;
+                                    RemoveCarriageReturn(caracteristicas);
                                 Console.WriteLine("Obteniendo Características");
 
                                 if (poseeImagen)
@@ -277,28 +280,39 @@ namespace AmazingScraper
                     {
                         Console.WriteLine("Cancelado por usuario");
                     }
-                }                
+                }
             }
             Console.WriteLine("Cerrando navegador");
-            driver.Dispose();
+            driver.Close();
+            driver.Quit();
             Console.WriteLine("Terminado");
             Working = false;
+            var form = Application.OpenForms[0] as MainForm;
+
+            form.InsertBar = "--";
         }
+
+        private static string RemoveCarriageReturn(string blockOfText)
+        {
+            string processedString = blockOfText
+                .Replace(" "+Environment.NewLine, ". ")
+                .Replace(Environment.NewLine, ". ")
+                .Replace("..", ".")
+                .Replace("› Ver más detalles", "");
+
+            return processedString;
+        }
+
         public static async Task ClockGear()
         {
-            //Stuff Happens on the original UI thread
-
-            await Task.Run(() => //This code runs on a new thread, control is returned to the caller on the UI thread.
+            await Task.Run(() =>
             {
                 while (Working)
                 {
-                 AddGear();
+                    AddGear();
                     Thread.Sleep(500);
-                }
-            //Do Stuff
-    });
-
-            //Stuff Happens on the original UI thread after the loop exits.
+                }              
+            });
         }
     }
 }

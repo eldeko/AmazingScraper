@@ -79,12 +79,13 @@
             // 
             // TxtBox_Search
             // 
-            this.TxtBox_Search.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.TxtBox_Search.Location = new System.Drawing.Point(0, 341);
+            this.TxtBox_Search.AllowDrop = true;
+            this.TxtBox_Search.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TxtBox_Search.Location = new System.Drawing.Point(13, 245);
             this.TxtBox_Search.Multiline = true;
             this.TxtBox_Search.Name = "TxtBox_Search";
             this.TxtBox_Search.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.TxtBox_Search.Size = new System.Drawing.Size(767, 227);
+            this.TxtBox_Search.Size = new System.Drawing.Size(751, 261);
             this.TxtBox_Search.TabIndex = 12;
             this.TxtBox_Search.TextChanged += new System.EventHandler(this.TxtBox_Search_TextChanged);
             // 
@@ -106,7 +107,7 @@
             // pictureBox3
             // 
             this.pictureBox3.Image = global::AmazingScraper.Properties.Resources.search_12_128;
-            this.pictureBox3.Location = new System.Drawing.Point(691, 245);
+            this.pictureBox3.Location = new System.Drawing.Point(691, 209);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(26, 30);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;

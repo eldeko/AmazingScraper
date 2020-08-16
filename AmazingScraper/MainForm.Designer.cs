@@ -103,8 +103,9 @@ namespace AmazingScraper
             this.Label_GearBar.ForeColor = System.Drawing.Color.Chocolate;
             this.Label_GearBar.Location = new System.Drawing.Point(730, 59);
             this.Label_GearBar.Name = "Label_GearBar";
-            this.Label_GearBar.Size = new System.Drawing.Size(0, 40);
+            this.Label_GearBar.Size = new System.Drawing.Size(41, 40);
             this.Label_GearBar.TabIndex = 2;
+            this.Label_GearBar.Text = "--";
             this.Label_GearBar.TextChanged += new System.EventHandler(this.GearText_TextChanged);
             this.Label_GearBar.Click += new System.EventHandler(this.Label_GearBar_Click);
             // 

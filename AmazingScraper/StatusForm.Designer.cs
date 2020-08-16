@@ -37,6 +37,7 @@
             this.txtConsole.Location = new System.Drawing.Point(3, 3);
             this.txtConsole.Multiline = true;
             this.txtConsole.Name = "txtConsole";
+            this.txtConsole.ReadOnly = true;
             this.txtConsole.Size = new System.Drawing.Size(761, 468);
             this.txtConsole.TabIndex = 2;
             this.txtConsole.TextChanged += new System.EventHandler(this.txtConsole_TextChanged_1);
