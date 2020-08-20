@@ -4,10 +4,10 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,49 +19,20 @@ namespace AmazingScraper
         private static int GearNumber { get; set; }
         public static bool GreenLight { get; set; }
         public static bool Working { get; private set; }
-        public static string GearBar()
+
+        int id = 0;      
+
+        public void Scrape(string userParam, string passwordParam, string searchParams, bool showChrome, bool oneCsv)
         {
-            switch (GearNumber)
-            {
-                case 1: return " | ";
-                case 2: return " / ";
-                case 3: return "-- ";
-                case 4: return "\\ ";
-                default: return " | ";
-            }
-        }
-
-        private static void AddGear()
-        {
-            GearNumber++;
-
-            if (GearNumber == 5)
-                GearNumber = 1;
-            var form = Application.OpenForms[0] as MainForm;
-            Control.CheckForIllegalCrossThreadCalls = false;
-            form.InsertBar = GearBar();
-        }
-
-        public void Scrape(string userParam, string passwordParam, string searchParams, bool showChrome)
-        {
-
             Working = true;
             ClockGear();
             GreenLight = true;
             Control.CheckForIllegalCrossThreadCalls = false;
             bool LoggedIn = false;
+            string baseDir = "c:\\Scraping";         
 
-            string BaseDir = "c:\\Scraping";
-
-
-            if (!Directory.Exists(BaseDir))
-            {
-                TextBox.CheckForIllegalCrossThreadCalls = false;
-                Console.WriteLine("Creando Directorio Base");
-                Directory.CreateDirectory(BaseDir);
-            }
-
-            int id = 0;
+            SetBaseDir(baseDir);
+            string fechaString = DateTime.Now.ToString("yyyy-MM-dd hh.mm");
 
             #region Default Login
 
@@ -74,6 +45,7 @@ namespace AmazingScraper
             #endregion
 
             string[] array = searchParams.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
             Console.WriteLine("Abriendo navegador");
             var options = new ChromeOptions();
 
@@ -86,6 +58,10 @@ namespace AmazingScraper
             var driver = new ChromeDriver(driverService, options);
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(10000));
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Id,Link,Producto,Características,Valoración,Precio,Precio Envío,Descripción,Link Imagen,Link Afiliado");
+
             foreach (string searchParam in array)
             {
                 #region Login
@@ -97,16 +73,19 @@ namespace AmazingScraper
                     Console.WriteLine("Ingresando a Amazon.es");
                     driver.Url = "https://www.amazon.es/";
                     Console.WriteLine("Click en Login");
+                    wait.Until(drv => drv.FindElement(By.CssSelector("#nav-link-accountList > div > span")).Displayed);
                     driver.FindElement(By.CssSelector("#nav-link-accountList > div > span")).Click();
                     AddGear();
                     //Fill email and click
                     Console.WriteLine("Ingresando usuario");
+                    wait.Until(drv => drv.FindElement(By.CssSelector("#ap_email")).Displayed);
                     var user = driver.FindElement(By.CssSelector("#ap_email"));
                     user.SendKeys(userParam);
                     driver.FindElement(By.CssSelector("#continue")).Click();
                     AddGear();
                     //Fill password and click
                     Console.WriteLine("Ingresando Contraseña");
+                    wait.Until(drv => drv.FindElement(By.CssSelector("#ap_password")).Displayed);
                     var password = driver.FindElement(By.CssSelector("#ap_password"));
                     password.SendKeys(passwordParam);
                     driver.FindElement(By.CssSelector("#auth-signin-button")).Click();
@@ -120,7 +99,7 @@ namespace AmazingScraper
                 if (GreenLight)
                 {
                     //Fill search
-                    Console.WriteLine("Ingresando en Amazon.es");
+                    Console.WriteLine("Ingresando a Amazon.es");
                     driver.Url = "https://www.amazon.es/";
                     AddGear();
                     Thread.Sleep(2000);
@@ -128,7 +107,7 @@ namespace AmazingScraper
                     Console.WriteLine("Ingresando búsqueda");
                     searchBox.SendKeys(searchParam);
                     searchBox.SendKeys(OpenQA.Selenium.Keys.Return);
-                    //driver.FindElement(By.CssSelector("#nav-search > form > div.nav-right > div > input")).Click();
+                   
                     AddGear();
                     Thread.Sleep(2000);
                     AddGear();
@@ -149,8 +128,12 @@ namespace AmazingScraper
 
                     var filteredElements = webElements.Where(z => !z.Text.Contains("Patrocinado"));
                     AddGear();
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("Id,Link,Producto,Características,Valoración,Precio,Precio Envío,Descripción,Link Imagen,Link Afiliado");
+
+                    if (!oneCsv)
+                    {
+                        sb.Clear();
+                        sb.AppendLine("Id,Link,Producto,Características,Valoración,Precio,Precio Envío,Descripción,Link Imagen,Link Afiliado");
+                    }
 
                     var linkList = new List<string>();
                     AddGear();
@@ -165,11 +148,11 @@ namespace AmazingScraper
                     #endregion
                     AddGear();
                     if (GreenLight)
-                        foreach (string link in linkList)
+                        foreach (string link in linkList.Take(2))
                         {
                             if (GreenLight)
                             {
-                                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(10000));
+                                
                                 AddGear();
                                 Console.WriteLine("Ingresando a producto");
                                 driver.Url = link;
@@ -197,23 +180,13 @@ namespace AmazingScraper
                                 id += 1;
 
                                 #region Init vars
-                                string descripcion = "";
-                                string valoracion = "";
-                                string precio = "";
-                                string precioEnvio = "";
-                                string nombreProducto = "";
-                                string linkImagen = "";
-                                string caracteristicas = "";
+                                string descripcion = ""; string valoracion = ""; string precio = ""; string precioEnvio = "";
+                                string nombreProducto = ""; string linkImagen = ""; string caracteristicas = "";
                                 #endregion
 
-                                string FullDir = BaseDir + "\\" + searchParam;
+                                string fullDir = baseDir + "\\" + searchParam;
 
-                                if (!Directory.Exists(FullDir))
-                                {
-                                    Console.WriteLine("Creando directorio de búsqueda");
-                                    Directory.CreateDirectory(FullDir);
-                                    id = 1;
-                                }
+                                CreateFullDir(fullDir);
 
                                 #region Validaciones
 
@@ -240,21 +213,20 @@ namespace AmazingScraper
 
                                 if (poseeCaracteristicas)
                                     caracteristicas = driver.FindElement(By.CssSelector("#feature-bullets")).Text;
-                                    RemoveCarriageReturn(caracteristicas);
+                                    caracteristicas = RemoveCarriageReturn(caracteristicas);
                                 Console.WriteLine("Obteniendo Características");
+ #endregion
 
                                 if (poseeImagen)
                                 {
                                     Console.WriteLine("Descargando Imagen");
                                     linkImagen = driver.FindElement(By.CssSelector("#landingImage")).GetAttribute("src");
-                                    ImageDownloader.DownloadImageFromUrl(linkImagen).Save(FullDir + "\\" + id + " - " + searchParam + ".jpg");
+                                    ImageDownloader.DownloadImageFromUrl(linkImagen).Save(fullDir + "\\" + searchParam + " - " + id + ".jpg");
                                     Console.WriteLine("Imagen descargada");
-                                }
-
-                                #endregion
+                                }                               
 
                                 #region Appends
-                                //Id,Link,Producto,Características,Valoración,Precio,Precio Envío,Descripción,Link Imagen,Link Afiliado.
+                              
                                 AddGear();
                                 sb.AppendLine("\"" + id + "\","
                                              + "\"" + link + "\","
@@ -270,8 +242,20 @@ namespace AmazingScraper
                                 string s = sb.ToString();
                                 AddGear();
                                 #endregion
+
                                 Console.WriteLine("Guardando CSV...");
-                                System.IO.File.WriteAllText(FullDir + "\\scrap.csv", s);
+
+                                string fileNameWithDate = "";
+
+                                if (oneCsv)
+                                {
+                                    fileNameWithDate = baseDir + "\\" + fechaString + ".csv";
+                                }
+                                else
+                                {
+                                    fileNameWithDate = fullDir + "\\" + searchParam + " " + fechaString + ".csv";
+                                }
+                                File.WriteAllText(fileNameWithDate, s);
                                 Console.WriteLine("Guardado");
                                 Console.WriteLine("");
                             }
@@ -285,11 +269,42 @@ namespace AmazingScraper
             Console.WriteLine("Cerrando navegador");
             driver.Close();
             driver.Quit();
+            KillChromeDriver();
             Console.WriteLine("Terminado");
             Working = false;
             var form = Application.OpenForms[0] as MainForm;
 
             form.InsertBar = "--";
+        }
+
+        private void KillChromeDriver()
+        {
+            var chromeDriverProcesses = Process.GetProcesses().Where(pr => pr.ProcessName == "chromedriver");
+
+            foreach (var process in chromeDriverProcesses)
+            {
+                process.Kill();
+            }
+        }
+
+        private void CreateFullDir(string fullDir)
+        {
+            if (!Directory.Exists(fullDir))
+            {
+                Console.WriteLine("Creando directorio de búsqueda");
+                Directory.CreateDirectory(fullDir);
+                id = 1;
+            }
+        }
+
+        private void SetBaseDir(string baseDir)
+        {           
+            if (!Directory.Exists(baseDir))
+            {
+                Control.CheckForIllegalCrossThreadCalls = false;
+                Console.WriteLine("Creando Directorio Base");
+                Directory.CreateDirectory(baseDir);
+            }
         }
 
         private static string RemoveCarriageReturn(string blockOfText)
@@ -313,6 +328,29 @@ namespace AmazingScraper
                     Thread.Sleep(500);
                 }              
             });
+        }
+
+        private static void AddGear()
+        {
+            GearNumber++;
+
+            if (GearNumber == 5)
+                GearNumber = 1;
+            var form = Application.OpenForms[0] as MainForm;
+            Control.CheckForIllegalCrossThreadCalls = false;
+            form.InsertBar = GearBar();
+        }
+
+        public static string GearBar()
+        {
+            switch (GearNumber)
+            {
+                case 1: return " | ";
+                case 2: return " / ";
+                case 3: return "-- ";
+                case 4: return "\\ ";
+                default: return " | ";
+            }
         }
     }
 }

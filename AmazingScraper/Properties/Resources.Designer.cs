@@ -113,6 +113,16 @@ namespace AmazingScraper.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap MultiCSV {
+            get {
+                object obj = ResourceManager.GetObject("MultiCSV", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap password {
             get {
                 object obj = ResourceManager.GetObject("password", resourceCulture);
@@ -136,6 +146,16 @@ namespace AmazingScraper.Properties {
         internal static System.Drawing.Bitmap setup {
             get {
                 object obj = ResourceManager.GetObject("setup", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SingleCSV {
+            get {
+                object obj = ResourceManager.GetObject("SingleCSV", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

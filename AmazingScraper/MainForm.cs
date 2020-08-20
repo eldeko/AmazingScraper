@@ -23,6 +23,7 @@ namespace AmazingScraper
         
         private string insertBar;
         private bool showChrome = false;
+        private bool singleCsv = false;
         public string InsertBar  
         {
             get { return insertBar; }
@@ -126,7 +127,7 @@ namespace AmazingScraper
                 configForm.Hide();
                 StatusForm.Show();
 
-                await Task.Run(() => scraper.Scrape(configForm.TxtBox_User.Text, configForm.TxtBox_Password.Text, configForm.TxtBox_Search.Text, showChrome));
+                await Task.Run(() => scraper.Scrape(configForm.TxtBox_User.Text, configForm.TxtBox_Password.Text, configForm.TxtBox_Search.Text, showChrome, singleCsv));
                 Application.DoEvents();
 
                 Button_Big.BackColor = Color.Green;
@@ -171,6 +172,25 @@ namespace AmazingScraper
 
             PictureBox_ShowBrowser.Refresh();
 
+        }
+
+        private void Pic_CsvOpts_Click(object sender, EventArgs e)
+        {
+            if (singleCsv == false)
+            {
+                singleCsv = true;
+                Pic_CsvOpts.Image = AmazingScraper.Properties.Resources.SingleCSV;
+                Pic_CsvOpts.Refresh();
+                return;
+            }
+
+            if (singleCsv == true)
+            {
+                singleCsv = false;
+                Pic_CsvOpts.Image = AmazingScraper.Properties.Resources.MultiCSV;
+                Pic_CsvOpts.Refresh();
+                return;
+            }         
         }
     }
 }
