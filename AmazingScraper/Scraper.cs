@@ -34,16 +34,6 @@ namespace AmazingScraper
             SetBaseDir(baseDir);
             string fechaString = DateTime.Now.ToString("yyyy-MM-dd hh.mm");
 
-            #region Default Login
-
-            if (string.IsNullOrEmpty(userParam))
-                userParam = "angeles.ladigan@gmail.com";
-
-            if (string.IsNullOrEmpty(passwordParam))
-                passwordParam = "DekoTommy0904";
-
-            #endregion
-
             string[] array = searchParams.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             Console.WriteLine("Abriendo navegador");
